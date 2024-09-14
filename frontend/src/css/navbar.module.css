@@ -1,0 +1,74 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 8vh;
+  background-color: white;
+  display: grid;
+  grid-template-columns: 18vw 1fr 18vw;
+  z-index: 100000;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.title {
+  background-color: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-style: oblique;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 20px;
+  .bell {
+    cursor: pointer;
+  }
+  .searchBar {
+    height: 25px;
+    width: 300px;
+    border-radius: 999999px;
+    background-color: #f3f3f3;
+    padding: 5px 10px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    input {
+      background-color: transparent;
+      border: none;
+      height: 100%;
+      font-size: 1rem;
+      color: black;
+      cursor: pointer;
+      padding: 0 10px;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+.profile {
+  position: relative;
+  display: flex;
+  column-gap: 15px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile::before {
+  content: " ";
+  position: absolute;
+  height: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  border-left: 3px solid #d3d3d3;
+}
