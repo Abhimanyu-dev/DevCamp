@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
 import useStock from '../provider/useStock';
+import style from "../css/chart.module.css"
 
 // Register necessary Chart.js components
-ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale);
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement);
 
 const StockChart = () => {
     const { stocks } = useStock()
@@ -17,26 +18,25 @@ const StockChart = () => {
                 setCurrentStockIndex((prev) => prev === stocks.length - 1 ? 0 : prev + 1)
             }, 60000)
         return () => clearInterval(interval)
-    }, [])
+    }, [stocks])
 
     useEffect(() => {
         if (stocks != null)
             setSelectedStock(stocks[currentStockIndex])
-    }, [currentStockIndex])
+    }, [currentStockIndex, stocks])
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (stocks != null) {
+        if (stocks != null && selectedStock != null) {
             setLoading(false)
             console.log("HI")
-            const result = selectedStock.chart.result[0];
+            const result = selectedStock.data.chart.result[0];
             const timestamps = result.timestamp.map(ts => new Date(ts * 1000).toLocaleTimeString());
             const open = result.indicators.quote[0].open;
             const high = result.indicators.quote[0].high;
             const low = result.indicators.quote[0].low;
             const close = result.indicators.quote[0].close;
-
             setChartData({
                 labels: timestamps,
                 datasets: [
@@ -46,6 +46,7 @@ const StockChart = () => {
                         borderColor: 'blue',
                         backgroundColor: 'rgba(0, 0, 255, 0.2)',
                         fill: false,
+                        hidden: true,
                     },
                     {
                         label: 'High Price',
@@ -60,6 +61,7 @@ const StockChart = () => {
                         borderColor: 'red',
                         backgroundColor: 'rgba(255, 0, 0, 0.2)',
                         fill: false,
+                        hidden: true,
                     },
                     {
                         label: 'Close Price',
@@ -67,20 +69,21 @@ const StockChart = () => {
                         borderColor: 'black',
                         backgroundColor: 'rgba(0, 0, 0, 0.2)',
                         fill: false,
+                        hidden: true,
                     },
                 ],
             });
         }
 
-    }, [selectedStock]);
+    }, [selectedStock, stocks]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className={style.container}>Loading ...</div>;
 
     return (
-        <div>
+        <div className={style.container}>
             <h2>{selectedStock.ticker} Stock Data for {selectedStock.timestamp}</h2>
             {chartData && (
-                <Line
+                <Line 
                     data={chartData}
                     options={{
                         responsive: true,
